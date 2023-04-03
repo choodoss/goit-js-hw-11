@@ -24,8 +24,8 @@ const names = [
 ]
 
 function getRandomInt() {
-    min = 0;
-    max = Math.floor(names.length);
+    const min = 0;
+    const max = Math.floor(names.length);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 const imgEl = document.querySelectorAll('img');
