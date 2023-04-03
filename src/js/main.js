@@ -130,7 +130,7 @@ function hendleSearchImagesByFilter(e) {
 function insertPicture(hits, total) {
     const hasMorePictures = page < Math.ceil(total / 40);
     const cardMarkup = cardMacker(hits);
-
+    window.scrollTo(0, 0);
     if (staticTotal !== total) {
         galleryEl.innerHTML = cardMarkup;
         loaderEl.classList.add('visualy-hidden');
