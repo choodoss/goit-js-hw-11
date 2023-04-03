@@ -217,7 +217,7 @@ select::-ms-expand {
 
 .photo-card__img {
     width: 100%;
-    height: 80%;
+
     object-fit: cover;
 
     @media screen and (max-width: 560px) {
@@ -398,4 +398,16 @@ img {
 
 .group-3 {
     align-items: flex-start;
+}
+
+.photo-card__link {
+    display: block;
+    height: 80%;
+    text-decoration: none;
+    transition: transform var(--animation-duration) var(--timing-function);
+}
+
+.photo-card__link:hover {
+    cursor: zoom-in;
+    transform: scale(1.03);
 }

@@ -1,5 +1,7 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 // import axios, { isCancel, AxiosError } from 'axios';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 import { searchImages, searchImagesFilterOrientation, searchImagesFilterСolors, searchImagesFilterType, searchImagesFilterCategory } from './SearchImages'
 import { cardMacker } from './card';
@@ -11,7 +13,7 @@ const mainBackgrounEL = document.querySelector('.background-image');
 const filterEl = document.querySelector('.filters');
 
 let page = 1;
-let needMorePicture;
+let hasMorePictures;
 let name;
 const options = {
     root: null,
@@ -31,9 +33,8 @@ const callbackObserv = function (entries, observer) {
                 .then(({ hits }) => {
                     galleryEl.insertAdjacentHTML('beforeend', cardMacker(hits))
                     loaderEl.classList.add('visualy-hidden')
-                    if (needMorePicture) {
-                        const target = document.querySelector('.photo-card:last-child');
-                        observer.observe(target);
+                    if (hasMorePictures) {
+                        observer.observe(document.querySelector('.photo-card:last-child'));
                     }
                 });
         }
@@ -49,8 +50,6 @@ function hendleSearchImages(e) {
         return Notify.failure('Enter the search request');
     } else {
         loaderEl.classList.remove('visualy-hidden');
-        searchFormEl.classList.add('js--search-form');
-        mainBackgrounEL.classList.add('is-hidden');
         needFunction = searchImages;
         needFunction(name, page)
             .then(({ hits, total }) => {
@@ -59,11 +58,15 @@ function hendleSearchImages(e) {
                     searchFormEl.reset();
                     return Notify.failure(`Sorry, there are no images with name '${name}' matching your search query. Please try again.`);
                 }
+                searchFormEl.classList.add('js--search-form');
+                mainBackgrounEL.classList.add('is-hidden');
+                insertPicture(hits, total);
+                Notify.success(`Hooray! We found ${total} images.`);
                 galleryEl.insertAdjacentHTML('beforeend', cardMacker(hits));
                 loaderEl.classList.add('visualy-hidden');
-                filterEl.classList.remove('is-hidden');
-                needMorePicture = total > (40 * page);
-                if (needMorePicture) {
+                setTimeout(() => filterEl.classList.remove('is-hidden'), 1000)
+                hasMorePictures = total > (40 * page);
+                if (hasMorePictures) {
                     const target = document.querySelector('.photo-card:last-child');
                     observer.observe(target);
                 }
@@ -72,18 +75,19 @@ function hendleSearchImages(e) {
                 throw new Error(err);
             })
     }
-
 }
 
 searchFormEl.addEventListener('submit', hendleSearchImages);
 
 function hendleSearchImagesByFilter(e) {
+    page = 1;
     loaderEl.classList.remove('visualy-hidden');
     switch (e.target.name) {
         case 'image type':
             needFunction = searchImagesFilterType;
             needFunction(e.target.value, page).then(({ hits, total }) => {
                 insertPicture(hits, total);
+                Notify.success(`Hooray! We found ${total} images.`);
             })
                 .catch((err) => {
                     throw new Error(err);
@@ -93,6 +97,7 @@ function hendleSearchImagesByFilter(e) {
             needFunction = searchImagesFilterType;
             searchImagesFilterCategory(e.target.value, page).then(({ hits, total }) => {
                 insertPicture(hits, total);
+                Notify.success(`Hooray! We found ${total} images.`);
             })
                 .catch((err) => {
                     throw new Error(err);
@@ -102,6 +107,7 @@ function hendleSearchImagesByFilter(e) {
             needFunction = searchImagesFilterType;
             searchImagesFilterСolors(e.target.value, page).then(({ hits, total }) => {
                 insertPicture(hits, total);
+                Notify.success(`Hooray! We found ${total} images.`);
             })
                 .catch((err) => {
                     throw new Error(err);
@@ -111,6 +117,7 @@ function hendleSearchImagesByFilter(e) {
             needFunction = searchImagesFilterType;
             searchImagesFilterOrientation(e.target.value, page).then(({ hits, total }) => {
                 insertPicture(hits, total);
+                Notify.success(`Hooray! We found ${total} images.`);
             })
                 .catch((err) => {
                     throw new Error(err);
@@ -125,7 +132,6 @@ function insertPicture(hits, total) {
 
     if (staticTotal !== total) {
         galleryEl.innerHTML = cardMarkup;
-        page
         loaderEl.classList.add('visualy-hidden');
         if (hasMorePictures) {
             observer.observe(document.querySelector('.photo-card:last-child'));
@@ -139,6 +145,12 @@ function insertPicture(hits, total) {
             Notify.failure(`The pictures are gone(`);
         }
     }
+    let gallery = new SimpleLightbox('.photo-card__link', {
+        captions: true,
+        captionDelay: 250,
+        captionsData: 'alt',
+        captionPosition: 'bottom',
+    });
 }
 searchFormEl.addEventListener('input', hendleSearchImagesByFilter);
 

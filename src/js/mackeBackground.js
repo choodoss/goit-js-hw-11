@@ -1,6 +1,27 @@
 import { searchImages } from './SearchImages'
 
-const names = ['cat', 'dog', 'popular', 'fun', 'ukraine', 'lions', 'girls', 'horses', 'nature', 'space']
+const names = [
+    "cats",
+    "nature",
+    "cars",
+    "city",
+    "beach",
+    "fashion",
+    "drawings",
+    "food",
+    "animals",
+    "sports",
+    "background",
+    "birds",
+    "romance",
+    "technology",
+    "space",
+    "wedding",
+    "music",
+    "river",
+    "sunset",
+    "spring"
+]
 
 function getRandomInt() {
     min = 0;

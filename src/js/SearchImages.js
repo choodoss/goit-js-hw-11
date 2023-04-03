@@ -21,7 +21,7 @@ export function searchImages(name, page, per_page = 40) {
         })
 };
 
-export function searchImagesFilterOrientation(orientation = 'all', page) {
+export function searchImagesFilterOrientation(orientation = 'all', page = 1) {
     const parameters = new URLSearchParams({
         orientation,
         page
@@ -29,7 +29,7 @@ export function searchImagesFilterOrientation(orientation = 'all', page) {
     return fetchF(url, parameters)
 };
 
-export function searchImagesFilterСolors(colors, page) {
+export function searchImagesFilterСolors(colors, page = 1) {
     const parameters = new URLSearchParams({
         colors,
         page
@@ -37,7 +37,7 @@ export function searchImagesFilterСolors(colors, page) {
     return fetchF(url, parameters)
 
 };
-export function searchImagesFilterType(image_type = "all", page) {
+export function searchImagesFilterType(image_type = "all", page = 1) {
     const parameters = new URLSearchParams({
         image_type,
         page
@@ -46,7 +46,7 @@ export function searchImagesFilterType(image_type = "all", page) {
     return fetchSearch;
 }
 
-export function searchImagesFilterCategory(category, page) {
+export function searchImagesFilterCategory(category, page = 1) {
     const parameters = new URLSearchParams({
         category,
         page
@@ -56,7 +56,6 @@ export function searchImagesFilterCategory(category, page) {
 
 async function fetchF(url, parameters) {
     const response = await fetch(urlUpDate(url, parameters));
-    console.log(response)
     if (!response.ok) {
         throw new Error(response.status);
     }
@@ -65,7 +64,8 @@ async function fetchF(url, parameters) {
 }
 
 function urlUpDate(originalUrl, parameters) {
-    console.log(originalUrl)
-    console.log(parameters)
-    return `${originalUrl.replace(new RegExp('page=1', 'g'), '')}${parameters}`;
+    const newUrl = `${originalUrl.replace(new RegExp('page=[1-9]+', 'g'), '')}${parameters}`
+    url = newUrl
+    console.log(url)
+    return url;
 }
