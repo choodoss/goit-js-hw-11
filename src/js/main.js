@@ -53,7 +53,9 @@ function hendleSearchImages(e) {
         needFunction = searchImages;
         needFunction(name, page)
             .then(({ hits, total }) => {
-                staticTotal = total;
+                if (staticTotal === '') {
+                    staticTotal = total;
+                }
                 if (hits.length === 0) {
                     searchFormEl.reset();
                     return Notify.failure(`Sorry, there are no images with name '${name}' matching your search query. Please try again.`);
@@ -62,7 +64,6 @@ function hendleSearchImages(e) {
                 mainBackgrounEL.classList.add('is-hidden');
                 insertPicture(hits, total);
                 Notify.success(`Hooray! We found ${total} images.`);
-                galleryEl.insertAdjacentHTML('beforeend', cardMacker(hits));
                 loaderEl.classList.add('visualy-hidden');
                 setTimeout(() => filterEl.classList.remove('is-hidden'), 1000)
                 hasMorePictures = total > (40 * page);
