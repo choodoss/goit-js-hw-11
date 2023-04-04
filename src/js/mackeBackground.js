@@ -30,16 +30,7 @@ function getRandomInt() {
 }
 const imgEl = document.querySelectorAll('img');
 
-searchImages(names[getRandomInt()], 1, 6, "vertical").then(({ hits }) => {
-    const arrg = [0, 1, 2, 6, 7, 8]
-    const photos = hits.map(({ webformatURL }, i) => {
-        return imgEl[arrg[i]].src = webformatURL;
-    })
-    searchImages(names[getRandomInt()], 1, 3, "horizontal").then(({ hits }) => {
-        const arrg = [3, 4, 5]
-        const photos = hits.map(({ webformatURL }, i) => {
-            return imgEl[arrg[i]].src = webformatURL;
-        })
-    })
+searchImages(names[getRandomInt()], 1, 9, "vertical").then(({ hits }) => {
+    return hits.map(({ webformatURL }, i) => imgEl[i].src = webformatURL)
 })
 
