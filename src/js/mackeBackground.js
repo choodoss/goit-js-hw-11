@@ -30,7 +30,17 @@ function getRandomInt() {
 }
 const imgEl = document.querySelectorAll('img');
 
-searchImages(names[getRandomInt()], 1, 9, "vertical").then(({ hits }) => {
+const arrOptionArgument = {
+    name: names[getRandomInt()],
+    page: 1,
+    per_page: 9,
+    category: 'all',
+    colors: 'all',
+    orientation: 'vertical',
+    image_type: 'all',
+};
+
+searchImages(arrOptionArgument).then(({ hits }) => {
     return hits.map(({ webformatURL }, i) => imgEl[i].src = webformatURL)
 })
 
