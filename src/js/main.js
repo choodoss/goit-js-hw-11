@@ -20,12 +20,7 @@ const options = {
     threshold: 1
 }
 
-let gallery = new SimpleLightbox('.photo-card__link', { // ініціалізую кожного разу (при першому завантаженні і при виборі фільтрів)
-    captions: true,
-    captionDelay: 250,
-    captionsData: 'alt',
-    captionPosition: 'bottom',
-});
+let gallery;
 const arrOptionArgument = {
     name: '',
     page: 1,
@@ -152,7 +147,12 @@ function insertPicture(hits, total) { // функція додавання га�
     } else {
         Notify.info(`The pictures are gone(`);
     }
-
+    gallery = new SimpleLightbox('.photo-card__link', { // ініціалізую кожного разу (при першому завантаженні і при виборі фільтрів)
+        captions: true,
+        captionDelay: 250,
+        captionsData: 'alt',
+        captionPosition: 'bottom',
+    });
 }
 
 searchFormEl.addEventListener('input', hendleSearchImagesByFilter); // для фільтрів
