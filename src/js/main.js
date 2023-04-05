@@ -20,8 +20,12 @@ const options = {
     threshold: 1
 }
 
-let gallery; // для запису SimpleLightbox
-
+let gallery = new SimpleLightbox('.photo-card__link', { // ініціалізую кожного разу (при першому завантаженні і при виборі фільтрів)
+    captions: true,
+    captionDelay: 250,
+    captionsData: 'alt',
+    captionPosition: 'bottom',
+});
 const arrOptionArgument = {
     name: '',
     page: 1,
@@ -36,15 +40,13 @@ const callbackObserv = function (entries, observer) {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             observer.unobserve(entry.target)
+            console.log('observer - відписався на observer')
             arrOptionArgument.page += 1;
             loaderEl.classList.remove('visualy-hidden')
             searchImages(arrOptionArgument)
-                .then(({ hits }) => {
-                    galleryEl.insertAdjacentHTML('beforeend', cardMacker(hits))
+                .then(({ hits, total }) => {
+                    insertPicture(hits, total); // додаваня розмітки + підписка
                     loaderEl.classList.add('visualy-hidden')
-                    if (hasMorePictures) {
-                        observer.observe(document.querySelector('.photo-card:last-child'));
-                    }
                     gallery.refresh() // повторна ініціалізація SimpleLightbox
                 });
         }
@@ -69,11 +71,11 @@ function hendleSearchImages(e) {
                 }
                 searchFormEl.classList.add('js--search-form'); // анімація підйому сьорчу у гору.
                 mainBackgrounEL.classList.add('is-hidden');// для зникнення бекграунду, точніше картинок на початковому меню
-                insertPicture(hits, total);//
+                hasMorePictures = total > (40 * arrOptionArgument.page);// перший підрахунок для observer
+                insertPicture(hits, total);//вставка картинок + підписка на observer
                 Notify.success(`Hooray! We found ${total} images.`);
                 loaderEl.classList.add('visualy-hidden');//ховаю динамічні 3 крапки лоадеру
                 setTimeout(() => filterEl.classList.remove('is-hidden'), 1000)//я хотів щоб фільтри зявлясь не відразу а коли меню вже підніметься у верх сторінки, зробив спеціально через setTimeout, так як ця функія викличеться останньою, а проміси перед нею
-                hasMorePictures = total > (40 * arrOptionArgument.page);// перший підрахунок для observer
             })
             .catch((err) => {
                 throw new Error(err);
@@ -83,7 +85,7 @@ function hendleSearchImages(e) {
 
 searchFormEl.addEventListener('submit', hendleSearchImages);
 
-function hendleSearchImagesByFilter(e) { // для вибору який фільтр був обраний і його значення + запуск необхідної функції
+function hendleSearchImagesByFilter(e) { //Функція для вибору який фільтр був обраний і його значення + запуск необхідної функції
     arrOptionArgument.page = 1;
     loaderEl.classList.remove('visualy-hidden');
     switch (e.target.name) {
@@ -132,7 +134,7 @@ function hendleSearchImagesByFilter(e) { // для вибору який філ�
     }
 }
 
-function insertPicture(hits, total) {
+function insertPicture(hits, total) { // функція додавання галереї працює при сабміті, виборі фільтрів і в обсеревері.
     hasMorePictures = arrOptionArgument.page < Math.ceil(total / 40);// додатковий підрахунок hasMorePictures для observer
     const cardMarkup = cardMacker(hits);
     if (arrOptionArgument.page === 1) { // спрацювання маркеру, як що пошук змінився (змінилася і кількість картинок), пнеобхідно перемалювати сторінку
@@ -143,17 +145,14 @@ function insertPicture(hits, total) {
         galleryEl.insertAdjacentHTML('beforeend', cardMarkup);
         loaderEl.classList.add('visualy-hidden');
     }
+
     if (hasMorePictures) {
-        observer.observe(document.querySelector('.photo-card:last-child'));
+        observer.observe(document.querySelector('.photo-card:last-child'));// встановлення підписки
+        console.log('insertPicture - підписався на observer')
     } else {
         Notify.info(`The pictures are gone(`);
     }
-    gallery = new SimpleLightbox('.photo-card__link', {
-        captions: true,
-        captionDelay: 250,
-        captionsData: 'alt',
-        captionPosition: 'bottom',
-    });
+
 }
 
 searchFormEl.addEventListener('input', hendleSearchImagesByFilter); // для фільтрів
