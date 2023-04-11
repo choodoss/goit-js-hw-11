@@ -1,9 +1,8 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-// import axios, { isCancel, AxiosError } from 'axios';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-import { searchImages, searchImagesFilterOrientation, searchImagesFilterСolors, searchImagesFilterType, searchImagesFilterCategory } from './SearchImages'
+import { searchImages } from './SearchImages'
 import { cardMacker } from './card';
 
 const searchFormEl = document.querySelector('.search-form');
